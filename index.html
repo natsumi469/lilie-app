@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lilie — 神業を資産に変える</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --blush: #E8C9BB;
+    --rose: #C4856A;
+    --deep: #2A1F1A;
+    --muted: #8A7570;
+    --sage: #8FA896;
+    --gold: #C9A96E;
+    --surface: #FFFFFF;
+    --border: rgba(42,31,26,0.08);
+    --shadow: 0 2px 24px rgba(42,31,26,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--deep);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed; top: 0; left: 0;
+    width: 260px; height: 100vh;
+    background: var(--deep);
+    display: flex; flex-direction: column;
+    z-index: 100;
+    padding: 32px 0;
+  }
+
+  .sidebar-logo {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--blush);
+    padding: 0 28px 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    letter-spacing: 0.04em;
+  }
+  .sidebar-logo span { color: var(--gold); }
+
+  .sidebar-nav { flex: 1; padding: 24px 0; overflow-y: auto; }
+
+  .phase-label {
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); padding: 0 28px 10px;
+    margin-top: 8px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.04); }
+  .nav-item.active { background: rgba(196,133,106,0.15); }
+  .nav-item.active::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--rose);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .nav-dot {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+    flex-shrink: 0;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.3);
+    transition: all 0.2s;
+  }
+  .nav-item.done .nav-dot {
+    background: var(--sage); border-color: var(--sage); color: white;
+  }
+  .nav-item.active .nav-dot {
+    background: var(--rose); border-color: var(--rose); color: white;
+  }
+
+  .nav-text { font-size: 12.5px; color: rgba(255,255,255,0.5); font-weight: 400; line-height: 1.4; }
+  .nav-item.active .nav-text { color: rgba(255,255,255,0.9); font-weight: 500; }
+  .nav-item.done .nav-text { color: rgba(255,255,255,0.6); }
+
+  .sidebar-footer {
+    padding: 20px 28px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .progress-bar-wrap { margin-top: 12px; }
+  .progress-bar-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .progress-bar-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--rose), var(--gold)); border-radius: 2px; transition: width 0.6s ease; }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 260px;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    padding: 32px 48px 0;
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .breadcrumb { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
+  .breadcrumb span { color: var(--rose); }
+
+  /* ── CONTENT AREA ── */
+  .content { padding: 24px 48px 60px; flex: 1; }
+
+  /* ── STEP CARD ── */
+  .step-card {
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    max-width: 780px;
+  }
+
+  .step-header {
+    padding: 36px 40px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .step-number {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--rose), var(--blush));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: white;
+    flex-shrink: 0;
+    font-family: 'Shippori Mincho', serif;
+  }
+  .step-title-wrap { flex: 1; }
+  .step-week { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rose); margin-bottom: 6px; }
+  .step-title { font-family: 'Shippori Mincho', serif; font-size: 20px; font-weight: 700; color: var(--deep); line-height: 1.4; }
+  .step-time { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .step-body { padding: 32px 40px; }
+
+  .purpose-box {
+    background: linear-gradient(135deg, #FFF8F5, #FFF3EC);
+    border: 1px solid rgba(196,133,106,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+  }
+  .purpose-box p { font-size: 14px; line-height: 1.8; color: var(--deep); }
+  .purpose-box strong { color: var(--rose); }
+
+  /* ── FORM ELEMENTS ── */
+  .field-group { margin-bottom: 24px; }
+  .field-label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 500; color: var(--deep);
+    margin-bottom: 10px;
+  }
+  .field-label .badge {
+    font-size: 9px; padding: 2px 8px; border-radius: 20px;
+    font-weight: 600; letter-spacing: 0.06em;
+  }
+  .badge-required { background: #FDE8E0; color: var(--rose); }
+  .badge-hint { background: #E8F0EC; color: var(--sage); }
+
+  .hint-text { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 8px; font-style: italic; }
+
+  textarea, input[type="text"] {
+    width: 100%; border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; color: var(--deep);
+    background: #FDFCFA;
+    resize: vertical; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.7;
+  }
+  textarea:focus, input[type="text"]:focus {
+    border-color: var(--rose);
+    box-shadow: 0 0 0 4px rgba(196,133,106,0.1);
+    background: white;
+  }
+  textarea { min-height: 90px; }
+
+  /* ── AI RESPONSE AREA ── */
+  .ai-section {
+    margin-top: 28px;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+  .ai-trigger-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, var(--rose), #D4906E);
+    color: white; border: none;
+    padding: 14px 28px; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .ai-trigger-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(196,133,106,0.35); }
+  .ai-trigger-btn:active { transform: translateY(0); }
+  .ai-trigger-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-icon { font-size: 16px; }
+
+  .ai-response-wrap {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #F8F4F0, #FAF7F2);
+    border: 1px solid rgba(196,133,106,0.15);
+    border-radius: 14px;
+    overflow: hidden;
+    display: none;
+  }
+  .ai-response-wrap.visible { display: block; }
+
+  .ai-response-header {
+    padding: 14px 20px;
+    background: rgba(196,133,106,0.08);
+    border-bottom: 1px solid rgba(196,133,106,0.12);
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 500; color: var(--rose);
+  }
+  .ai-avatar {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose), var(--blush));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: white;
+  }
+
+  .ai-response-body {
+    padding: 20px;
+    font-size: 14px; line-height: 1.9; color: var(--deep);
+    white-space: pre-wrap;
+    min-height: 60px;
+  }
+
+  .typing-indicator { display: flex; align-items: center; gap: 4px; padding: 4px 0; }
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--rose); animation: typing 1.2s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing { 0%,60%,100%{opacity:0.2;transform:scale(1)} 30%{opacity:1;transform:scale(1.2)} }
+
+  /* ── SAVED DATA PILLS ── */
+  .saved-data {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 20px;
+  }
+  .saved-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: #EFF5F1; border: 1px solid rgba(143,168,150,0.3);
+    border-radius: 20px; padding: 5px 12px;
+    font-size: 12px; color: #5A7A63; font-weight: 500;
+  }
+  .saved-pill .pill-icon { font-size: 13px; }
+
+  /* ── NAVIGATION BUTTONS ── */
+  .step-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 24px 40px;
+    border-top: 1px solid var(--border);
+    background: #FDFCFA;
+  }
+  .btn-prev, .btn-next {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 24px; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; border: none;
+  }
+  .btn-prev { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
+  .btn-prev:hover { border-color: var(--rose); color: var(--rose); }
+  .btn-next { background: var(--deep); color: white; }
+  .btn-next:hover { background: #3D2E28; transform: translateX(2px); }
+  .btn-next.primary { background: linear-gradient(135deg, var(--rose), #D4906E); }
+
+  /* ── COMPLETION STATE ── */
+  .completion-card {
+    max-width: 580px; margin: 60px auto;
+    text-align: center; padding: 60px 40px;
+    background: var(--surface); border-radius: 24px;
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+  }
+  .completion-icon { font-size: 52px; margin-bottom: 20px; }
+  .completion-title { font-family: 'Shippori Mincho', serif; font-size: 26px; font-weight: 700; color: var(--deep); margin-bottom: 12px; }
+  .completion-body { font-size: 15px; color: var(--muted); line-height: 1.8; }
+
+  /* ── WEEK INTRO ── */
+  .week-intro {
+    max-width: 780px; margin-bottom: 28px;
+    padding: 28px 36px;
+    background: var(--surface); border-radius: 16px;
+    border: 1px solid var(--border);
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .week-intro-icon { font-size: 32px; flex-shrink: 0; }
+  .week-intro-text h2 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 18px; font-weight: 700; color: var(--deep); margin-bottom: 6px;
+  }
+  .week-intro-text p { font-size: 13.5px; color: var(--muted); line-height: 1.7; }
+
+  /* ── RADIO OPTIONS ── */
+  .radio-group { display: flex; flex-direction: column; gap: 10px; }
+  .radio-option {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px; border-radius: 10px;
+    border: 1.5px solid var(--border);
+    cursor: pointer; transition: all 0.2s;
+    background: #FDFCFA;
+  }
+  .radio-option:hover { border-color: var(--rose); background: #FFF8F5; }
+  .radio-option.selected { border-color: var(--rose); background: #FFF3ED; }
+  .radio-option input { display: none; }
+  .radio-custom {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid var(--border); flex-shrink: 0; margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .radio-option.selected .radio-custom {
+    border-color: var(--rose); background: var(--rose);
+  }
+  .radio-option.selected .radio-custom::after {
+    content: ''; width: 6px; height: 6px;
+    border-radius: 50%; background: white;
+    display: block;
+  }
+  .radio-label { font-size: 14px; color: var(--deep); line-height: 1.5; }
+  .radio-label small { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* fade in */
+  .fade-in { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(42,31,26,0.12); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">Lilie <span>✦</span></div>
+  <div class="sidebar-nav" id="sidebarNav"></div>
+  <div class="sidebar-footer">
+    <div class="progress-bar-label">
+      <span style="color:rgba(255,255,255,0.4);font-size:11px;">全体の進捗</span>
+      <span id="progressLabel" style="color:var(--gold);font-size:11px;">0%</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="header">
+    <div class="breadcrumb" id="breadcrumb">フェーズ1：設計 <span>›</span> Week 1</div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</main>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STATE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const state = {
+  currentStep: 0,
+  answers: {},
+  aiResponses: {},
+  completedSteps: new Set()
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CURRICULUM STRUCTURE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const steps = [
+  // ── WEEK 1 ──
+  {
+    id: 'w1-intro', week: 1, phase: 'フェーズ1：設計',
+    navLabel: '講座の準備',
+    type: 'intro',
+    icon: '🌸',
+    title: 'Week 1：あなただけの「勝ち位置」を見つける',
+    body: `このWeekでは、AIとの壁打ちを通じて、あなたの経験・感覚・失敗談を言葉にします。\n\n「ただのヨガ講師」「普通のネイリスト」ではなく、あなたにしか作れない<strong>「職業 × 強み」の掛け算</strong>でコンセプトを決定します。\n\nここで作る言葉が、Week2のカリキュラム設計・Week3の商品設計・Week9のLPまで、すべての土台になります。`,
+    time: '作業時間：約40分'
+  },
+  {
+    id: 'w1-job', week: 1, phase: 'フェーズ1：設計',
+    navLabel: '職業を入力する',
+    type: 'form',
+    title: 'あなたのお仕事を教えてください',
+    purpose: 'AIにあなたの「パートナー役割」を設定します。ここで入力した職業が、以降のすべてのAI回答の軸になります。',
+    fields: [
+      {
+        id: 'job',
+        label: 'あなたの職業・肩書き',
+        badge: 'required',
+        hint: '例：ネイルサロンオーナー、ヘアメイクアーティスト、フリーランスデザイナー、ヨガインストラクター',
+        type: 'text',
+        placeholder: '例：ネイルサロンオーナー'
+      }
+    ]
+  },
+  {
+    id: 'w1-qa', week: 1, phase: 'フェーズ1：設計',
+    navLabel: '経験を深掘りする',
+    type: 'form_with_ai',
+    title: 'あなたの「感覚」と「失敗談」を話してください',
+    purpose: '私たちのような職人さんは、「感覚でやっていること」が多すぎて、それを言葉にするのに膨大な時間がかかります。ここに書いた<strong>「あなたにとって当たり前なこと」</strong>こそが、講座の特別なノウハウになります。',
+    fields: [
+      {
+        id: 'q_skill',
+        label: 'Q-A：あなたが「感覚でやっていること」',
+        badge: 'required',
+        hint: '誰でもマネできることとして詳しく教えてあげてください。「なんとなく」「長年の経験で」でOK。',
+        type: 'textarea',
+        placeholder: '例：お客様の雰囲気を見て、施術前に絶対に聞く質問がある。なぜかリピート率が高いが、自分でも理由がわからない...'
+      },
+      {
+        id: 'q_failure',
+        label: 'Q-C/D：一番大変だった失敗談・転機',
+        badge: 'required',
+        hint: '「一番大変だったあの時の話」こそが、受講生の共感を呼ぶストーリーになります。',
+        type: 'textarea',
+        placeholder: '例：独立して最初の1年は全然売れなかった。〇〇を変えたとたんにリピートが増えた...'
+      },
+      {
+        id: 'q_value',
+        label: 'Q-E：お客様にどんな気持ちを届けていますか？',
+        badge: 'hint',
+        hint: '施術後、お客様はどんな顔をして帰りますか？どんな言葉をくれますか？',
+        type: 'textarea',
+        placeholder: '例：「また来ます」より「あなたに来てよかった」と言われる。自信を持って帰っていく姿を見るのが好き...'
+      }
+    ],
+    aiAction: {
+      buttonLabel: 'AIに分析してもらう',
+      systemPrompt: (answers) => `あなたは、美容・クリエイティブ系の個人事業主が「売れるオンライン講座」を作るための、優秀なビジネスコンサルタントです。
+温かく、共感的で、でも的確なフィードバックをする専門家として振る舞ってください。
+相手は「自分の感覚を言語化するのが苦手」な職人肌の女性起業家です。彼女の言葉から宝物を見つけ出してあげてください。`,
+      userPrompt: (answers) => `私は${answers['job'] || 'フリーランス'}です。
+
+【私の感覚・ノウハウ】
+${answers['q_skill'] || '（未入力）'}
+
+【私の失敗談・転機】
+${answers['q_failure'] || '（未入力）'}
+
+【お客様への価値】
+${answers['q_value'] || '（未入力）'}
+
+上記をもとに、以下を分析してください：
+1. 私の「見えていない強み」（私が当たり前と思っていること）
+2. 「職業 × 強み」の掛け算で考えた、差別化コンセプト案を3つ（具体的な肩書き形式で）
+3. それぞれのコンセプト案の「ターゲット」と「なぜ刺さるか」
+
+温かく、でも具体的に教えてください。`
+    }
+  },
+  {
+    id: 'w1-concept', week: 1, phase: 'フェーズ1：設計',
+    navLabel: 'コンセプトを決定する',
+    type: 'form_with_ai',
+    title: 'あなただけの「勝ち位置」を決定する',
+    purpose: 'AIが出した3つの案から、あなたが<strong>「一番ワクワクするもの」</strong>を選んでください。売れるかではなく、情熱を持てるものが正解です。ミックスしてもOK！',
+    fields: [
+      {
+        id: 'concept_choice',
+        label: '方向性の選択',
+        badge: 'required',
+        hint: '上のAI回答を見ながら、「案〇番でいく」「案1と2を組み合わせる」など自由に入力してください',
+        type: 'textarea',
+        placeholder: '例：案2の方向性でいきます！でも「ターゲット」は案1の産後ママに絞りたいです'
+      },
+      {
+        id: 'concept_final',
+        label: '最終コンセプト（一文で）',
+        badge: 'required',
+        hint: '「私は、〇〇な人に、〇〇な変化を届ける〇〇の専門家です」の形で書いてみてください',
+        type: 'textarea',
+        placeholder: '例：私は、産後ボディに悩むママに、"自分を好きになる体"を届けるマタニティヨガ専門家です'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '決定したコンセプトをAIに確認してもらう',
+      systemPrompt: () => `あなたは売れるオンライン講座のコンセプトを評価する専門家です。
+熱狂的なファンを作るコンセプトの特徴を深く理解しています。
+温かく、背中を押す形でフィードバックしてください。`,
+      userPrompt: (answers) => `以下のコンセプトを評価してください：
+
+【職業】${answers['job'] || ''}
+【最終コンセプト】${answers['concept_final'] || answers['concept_choice'] || ''}
+
+評価してほしいこと：
+1. このコンセプトの「強み・刺さるポイント」
+2. さらに磨くとしたら？（1〜2点のみ）
+3. このコンセプトで3ヶ月後に初の受講生を獲得するために一番大切なこと
+
+100点満点でなくて大丈夫、まず進むための勇気をください！`
+    },
+    onComplete: (answers) => {
+      // Save concept to be used in Week 2
+      return { concept: answers['concept_final'] || answers['concept_choice'] };
+    }
+  },
+
+  // ── WEEK 2 ──
+  {
+    id: 'w2-intro', week: 2, phase: 'フェーズ1：設計',
+    navLabel: 'Week 2 へ進む',
+    type: 'intro',
+    icon: '✨',
+    title: 'Week 2：受講生が夢中になる「魔法のロードマップ」構築',
+    body: `Week 1で決めた<strong>「あなただけのコンセプト」</strong>をもとに、受講生をゴールへ導く全12回のカリキュラム（目次）をAIの逆算思考で一気に作ります。\n\nこの時点では、レッスンの「中身」はまだ作りません。<strong>正しい順番ができていればOK</strong>です。\n\nカリキュラムが見えると、「私の講座、すごいものになりそう」という確信が生まれます。`,
+    time: '作業時間：約20分'
+  },
+  {
+    id: 'w2-curriculum', week: 2, phase: 'フェーズ1：設計',
+    navLabel: 'カリキュラムを作る',
+    type: 'form_with_ai',
+    title: '全12回のカリキュラムをAIと作る',
+    purpose: 'AIの「逆算思考」を使います。「受講生がゴールに到達するために必要なステップ」を、Week 1のコンセプトを軸に自動設計します。',
+    showSavedData: ['concept_final', 'job'],
+    fields: [
+      {
+        id: 'curriculum_goal',
+        label: '受講生が3ヶ月後に達成する「ゴール」',
+        badge: 'required',
+        hint: '「〇〇ができるようになる」「〇〇の状態になる」という形で具体的に',
+        type: 'textarea',
+        placeholder: '例：自分のネイル技術を活かした高単価オンライン講座を立ち上げ、月5万円の副収入を得る'
+      }
+    ],
+    aiAction: {
+      buttonLabel: 'カリキュラムを自動設計する',
+      systemPrompt: () => `あなたは、売れるオンライン講座のカリキュラム設計の専門家です。
+受講生が「これなら私にもできる！」と確信を持てるよう、スモールステップで設計してください。
+美容・クリエイティブ系の女性個人事業主向けの講座を多数設計した経験があります。`,
+      userPrompt: (answers) => `以下の情報をもとに、受講生が成果を出すための全12回カリキュラムを設計してください。
+
+【講師の職業】${answers['job'] || ''}
+【コンセプト（勝ち位置）】${answers['concept_final'] || answers['concept_choice'] || ''}
+【受講生の3ヶ月後のゴール】${answers['curriculum_goal'] || ''}
+
+出力形式：
+・3つのフェーズ（Phase1〜3）に分けてください
+・各フェーズに4回のレッスンで計12回
+・各レッスンのタイトルは「受講生がワクワクする感情的な言葉」で
+・各タイトルに2〜3行の概要を付ける
+
+「第1回、第2回」という番号タイトルは避け、受講生が「この回だけでも価値がある！」と感じる言葉を選んでください。`
+    }
+  },
+  {
+    id: 'w2-customize', week: 2, phase: 'フェーズ1：設計',
+    navLabel: 'あなた色に仕上げる',
+    type: 'form_with_ai',
+    title: '「あなたらしさ」を上書きする',
+    purpose: 'AIが出したカリキュラムは論理的で完璧です。でも<strong>「あなたしか教えられない秘密のメソッド」</strong>を1つ以上加えることで、競合と全く違う講座になります。',
+    fields: [
+      {
+        id: 'curriculum_custom',
+        label: 'あなたのオリジナルコンテンツ・修正したい箇所',
+        badge: 'hint',
+        hint: '「Week〇を〇〇に変えたい」「私の独自メソッドである〇〇を加えたい」など自由に',
+        type: 'textarea',
+        placeholder: '例：Week7に「門外不出！リピート率90%を生むカウンセリングシートの作り方」を入れたい'
+      },
+      {
+        id: 'curriculum_final',
+        label: '確定した全12回タイトル（AIの回答をここに貼って調整してください）',
+        badge: 'required',
+        hint: 'AIの回答をベースに、あなたの感性で修正してください',
+        type: 'textarea',
+        placeholder: 'AIの回答をコピーして、ここに貼り付けてください'
+      }
+    ],
+    aiAction: {
+      buttonLabel: 'カリキュラムをさらに磨く',
+      systemPrompt: () => `あなたは講座カリキュラムのコピーライターです。
+「受講生の感情を動かすタイトル」の専門家として、的確で温かいアドバイスをしてください。`,
+      userPrompt: (answers) => `以下のカリキュラムをさらに磨いてください。
+
+【現在のカリキュラム】
+${answers['curriculum_final'] || answers['curriculum_custom'] || '（未入力）'}
+
+【追加・修正したいこと】
+${answers['curriculum_custom'] || '特になし'}
+
+お願い：
+1. タイトルをより「感情的・具体的」に磨く提案を3〜5箇所
+2. 「独自性が薄い」と感じる箇所があれば指摘
+3. このカリキュラムの「一番の売り文句」を1〜2文で`
+    }
+  },
+
+  // ── WEEK 3 ──
+  {
+    id: 'w3-intro', week: 3, phase: 'フェーズ1：設計',
+    navLabel: 'Week 3 へ進む',
+    type: 'intro',
+    icon: '💎',
+    title: 'Week 3：「欲しい！」と言わせるオファーと価格設定',
+    body: `講座の中身（カリキュラム）が同じでも、<strong>「見せ方（オファー）」</strong>が違うだけで成約率は3倍以上変わります。\n\nこのWeekでは、ペルソナの深掘り・提供スタイルの決定・松竹梅の価格設計・特典設計・キャッチコピーを順に仕上げます。\n\n最初は「30〜40万円×手厚いサポート」の高単価戦略で始めることをLilieでは推奨しています。実績を作ってから自動化へ進むのが最短ルートです。`,
+    time: '作業時間：約40分'
+  },
+  {
+    id: 'w3-persona', week: 3, phase: 'フェーズ1：設計',
+    navLabel: 'ペルソナを深掘りする',
+    type: 'form_with_ai',
+    title: '「誰の、どんな深い悩み」を解決するか？',
+    purpose: '「誰でもOK」な講座は誰にも刺さりません。<strong>「この人のために作った」</strong>という具体的な1人のペルソナが、共感とコピーを生みます。',
+    showSavedData: ['concept_final', 'job'],
+    fields: [
+      {
+        id: 'persona_desc',
+        label: 'あなたの理想の受講生（具体的に）',
+        badge: 'required',
+        hint: '年齢・職業・状況・悩みを具体的に。「誰でもOK」はNGです',
+        type: 'textarea',
+        placeholder: '例：35歳、ネイルサロンを自宅で営む主婦。技術には自信があるが、集客はインスタ頼み。予約が不安定で月収が読めない。もっと安定した収入が欲しいが、SNSを増やす時間もない...'
+      }
+    ],
+    aiAction: {
+      buttonLabel: 'ペルソナの「本当の悩み」を言語化する',
+      systemPrompt: () => `あなたは消費者心理と女性起業家の感情を深く理解するコピーライターです。
+「表面の悩み」の奥にある「本当の感情的ニーズ」を言語化することが得意です。`,
+      userPrompt: (answers) => `以下のペルソナの「本当の悩みと欲求」を言語化してください。
+
+【コンセプト】${answers['concept_final'] || answers['concept_choice'] || ''}
+【ペルソナ】${answers['persona_desc'] || ''}
+
+以下の形式で出力してください：
+1. 表面の悩み（本人が口にすること）
+2. 深層の感情（本当は何を恐れているか・何を望んでいるか）
+3. この人が「絶対に申し込む」LPのキャッチコピー案（3つ）
+4. この人が「申し込まない理由」（不安・言い訳）TOP3`
+    }
+  },
+  {
+    id: 'w3-offer', week: 3, phase: 'フェーズ1：設計',
+    navLabel: '提供スタイルを決める',
+    type: 'form_with_ai',
+    title: 'あなたの「届け方」を設計する',
+    purpose: '高単価でも満足度が高い講座にするために、<strong>何を組み合わせて提供するか</strong>を決めます。あなたのライフスタイルに合った無理のない設計をAIと一緒に考えます。',
+    fields: [
+      {
+        id: 'lifestyle',
+        label: 'あなたの今の生活・仕事スタイル',
+        badge: 'required',
+        hint: '週に使える時間、現在の仕事量、得意なこと・苦手なことなど',
+        type: 'textarea',
+        placeholder: '例：週3日サロン営業。子供の送迎があるので平日昼は動きにくい。文章を書くのは得意。Zoomは慣れていない...'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '提供スタイルを提案してもらう',
+      systemPrompt: () => `あなたはオンライン講座の提供形態設計の専門家です。
+講師の生活スタイルと受講生の満足度を両立する提供方法を提案することが得意です。`,
+      userPrompt: (answers) => `以下の条件で、最適な提供スタイルを設計してください。
+
+【コンセプト】${answers['concept_final'] || answers['concept_choice'] || ''}
+【ペルソナの悩み】${answers['persona_desc'] || ''}
+【私の生活スタイル】${answers['lifestyle'] || ''}
+
+提案してほしいこと：
+1. メインの提供方法（動画/テキスト/Zoom等）の組み合わせ
+2. サポート内容（添削/LINE相談/グループ等）の組み合わせ
+3. 月にかかる私の作業時間の目安
+4. 受講生満足度を上げるための「ひと工夫」
+
+無理なく続けられることを最優先にしてください。`
+    }
+  },
+  {
+    id: 'w3-price', week: 3, phase: 'フェーズ1：設計',
+    navLabel: '価格を設定する',
+    type: 'form_with_ai',
+    title: '松・竹・梅の3コース価格設計',
+    purpose: 'まず最初は<strong>「竹（中間）コース：30〜40万円 × 伴走型」</strong>で販売することをLilieでは推奨しています。実績がない状態こそ、手厚いサポートで差別化できます。',
+    fields: [
+      {
+        id: 'offer_content',
+        label: '「竹コース」に含めたいサポート内容（前のステップのAI回答を参考に）',
+        badge: 'required',
+        hint: 'AI提案から選んだもの、あなたが提供できるものを箇条書きで',
+        type: 'textarea',
+        placeholder: '例：\n・テキスト教材12回分\n・週1回Zoom個別セッション（3ヶ月）\n・LINE質問無制限\n・課題添削つき'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '松竹梅の価格設計をしてもらう',
+      systemPrompt: () => `あなたは高単価オンライン講座の価格設計の専門家です。
+特に美容・クリエイティブ系の女性起業家が「自信を持って価格を提示できる」ようにサポートすることが得意です。`,
+      userPrompt: (answers) => `以下の内容で、松竹梅3コースの価格設計を提案してください。
+
+【コンセプト】${answers['concept_final'] || answers['concept_choice'] || ''}
+【竹コースの内容】${answers['offer_content'] || ''}
+
+出力形式：
+【梅コース】内容・価格・ターゲット
+【竹コース（メイン）】内容・価格・ターゲット ※30〜40万円推奨
+【松コース】内容・価格・ターゲット
+
+加えて：
+・「竹コースをこの価格で売る」ための根拠（お客様への説明文）
+・「高すぎる」と言われたときの返し方`
+    }
+  },
+  {
+    id: 'w3-bonus', week: 3, phase: 'フェーズ1：設計',
+    navLabel: '特典を設計する',
+    type: 'form_with_ai',
+    title: '成約率を上げる「5つの特典」を考える',
+    purpose: '「特典が欲しくて買いました」というお客様は実はとても多いです。<strong>「私にできるかな？」という不安を打ち消す武器</strong>をAIと一緒に作ります。',
+    fields: [
+      {
+        id: 'bonus_ideas',
+        label: 'あなたが提供できそうな特典のアイデア',
+        badge: 'hint',
+        hint: 'まだ具体的でなくてOK。「〇〇みたいなものは出せそう」程度でも',
+        type: 'textarea',
+        placeholder: '例：プロンプト集なら作れそう、テンプレートなら作れる、LINEで相談は対応できる...'
+      }
+    ],
+    aiAction: {
+      buttonLabel: 'ペルソナの不安を消す特典を提案してもらう',
+      systemPrompt: () => `あなたは高単価オンライン講座の特典設計の専門家です。
+「この特典があるから安心して申し込める」という、受講生の背中を押す特典を設計するのが得意です。`,
+      userPrompt: (answers) => `以下の情報をもとに、成約率を上げる特典5つを提案してください。
+
+【コンセプト】${answers['concept_final'] || answers['concept_choice'] || ''}
+【ペルソナの深層不安】${answers['persona_desc'] || ''}
+【私が作れそうな特典のアイデア】${answers['bonus_ideas'] || '特になし'}
+
+条件：
+・私が無理なく作れるもの
+・受講生の「申し込まない理由TOP3」を打ち消すもの
+・各特典に「なぜこれが価値あるか」の一文を添えてください`
+    }
+  },
+  {
+    id: 'w3-copy', week: 3, phase: 'フェーズ1：設計',
+    navLabel: 'キャッチコピーを作る',
+    type: 'form_with_ai',
+    title: 'あなたの講座を一言で表す「キラーフレーズ」',
+    purpose: 'Week1〜3のすべてが集約された、<strong>LPやSNSで使う「魂のコピー」</strong>を作ります。ここまで来たあなたには、もう充分な素材が揃っています。',
+    fields: [
+      {
+        id: 'copy_feeling',
+        label: '受講生に「どんな気持ちで申し込んでほしいか」',
+        badge: 'hint',
+        hint: '「ワクワクして」「安心して」「これだ！と確信して」など感情で',
+        type: 'text',
+        placeholder: '例：「やっと私のための講座に出会えた」と感じて申し込んでほしい'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '魂のキャッチコピーを生成する',
+      systemPrompt: () => `あなたは感情を動かすコピーライターです。
+「読んだ人が申し込みたくなる」キャッチコピーを作るのが専門です。
+美容・クリエイティブ系の女性起業家の感性に刺さる言葉を知っています。`,
+      userPrompt: (answers) => `以下の情報をもとに、講座のキャッチコピーを作ってください。
+
+【職業・コンセプト】${answers['job'] || ''} / ${answers['concept_final'] || answers['concept_choice'] || ''}
+【ペルソナ】${answers['persona_desc'] || ''}
+【申し込んでほしい気持ち】${answers['copy_feeling'] || ''}
+【カリキュラムの特徴】${answers['curriculum_final'] || ''}
+
+出力してほしいもの：
+1. メインキャッチコピー（20字以内）× 3案
+2. サブキャッチコピー（40字以内）× 3案
+3. Instagram用の一文（ハッシュタグなし）× 2案
+4. LINEメッセージ書き出し1文 × 1案
+
+感情的で、具体的で、「私のことだ！」と思われる言葉を選んでください。`
+    }
+  },
+
+  // ── COMPLETE ──
+  {
+    id: 'complete', week: null, phase: '',
+    navLabel: '設計フェーズ完了！',
+    type: 'complete',
+    title: 'フェーズ1：設計 完了！',
+  }
+];
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// RENDER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  let currentWeek = null;
+  let html = '';
+
+  steps.forEach((step, i) => {
+    if (step.week && step.week !== currentWeek) {
+      currentWeek = step.week;
+      const phaseLabel = step.week === 1 ? 'Week 1 — 強みの発掘' : step.week === 2 ? 'Week 2 — ロードマップ' : step.week === 3 ? 'Week 3 — オファー設計' : '';
+      if (phaseLabel) html += `<div class="phase-label">${phaseLabel}</div>`;
+    }
+
+    const isDone = state.completedSteps.has(step.id);
+    const isActive = i === state.currentStep;
+    const cls = `nav-item${isDone ? ' done' : ''}${isActive ? ' active' : ''}`;
+    const dotContent = isDone ? '✓' : (i + 1);
+
+    html += `<div class="${cls}" onclick="goToStep(${i})">
+      <div class="nav-dot">${dotContent}</div>
+      <div class="nav-text">${step.navLabel}</div>
+    </div>`;
+  });
+
+  nav.innerHTML = html;
+
+  const pct = Math.round((state.completedSteps.size / (steps.length - 1)) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = pct + '%';
+}
+
+function renderMain() {
+  const step = steps[state.currentStep];
+  const content = document.getElementById('mainContent');
+  document.getElementById('breadcrumb').innerHTML =
+    step.phase ? `${step.phase} <span>›</span> ${step.navLabel}` : step.navLabel;
+
+  if (step.type === 'complete') {
+    content.innerHTML = `<div class="completion-card fade-in">
+      <div class="completion-icon">🎉</div>
+      <div class="completion-title">フェーズ1：設計 完了！</div>
+      <div class="completion-body" style="margin-top:16px">
+        <p>おめでとうございます！</p>
+        <p style="margin-top:12px">あなたは今、</p>
+        <ul style="margin:16px 0;text-align:left;line-height:2.2;padding-left:24px">
+          <li>✦ 競合と被らない<strong>コンセプト</strong></li>
+          <li>✦ 受講生が夢中になる<strong>全12回カリキュラム</strong></li>
+          <li>✦ 自信を持って提示できる<strong>価格と特典</strong></li>
+          <li>✦ 魂のこもった<strong>キャッチコピー</strong></li>
+        </ul>
+        <p>これらをすべて持っています。</p>
+        <p style="margin-top:16px;color:var(--rose);font-weight:500">次は Week 4：Utage会員サイトの土台作りへ進みましょう！</p>
+      </div>
+    </div>`;
+    renderSidebar();
+    return;
+  }
+
+  if (step.type === 'intro') {
+    content.innerHTML = `<div class="week-intro fade-in">
+      <div class="week-intro-icon">${step.icon}</div>
+      <div class="week-intro-text">
+        <h2>${step.title}</h2>
+        <p>${step.body.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>
+        <p style="margin-top:8px;font-size:12px;color:var(--rose)">${step.time}</p>
+      </div>
+    </div>
+    <div style="max-width:780px">
+      <button class="btn-next primary" onclick="nextStep()" style="font-size:15px;padding:16px 36px">
+        ワークを始める →
+      </button>
+    </div>`;
+    renderSidebar();
+    return;
+  }
+
+  // Form / form_with_ai
+  let savedDataHtml = '';
+  if (step.showSavedData) {
+    const pills = step.showSavedData
+      .filter(k => state.answers[k])
+      .map(k => {
+        const label = k === 'job' ? '職業' : k === 'concept_final' ? 'コンセプト' : k;
+        const val = state.answers[k].length > 30 ? state.answers[k].slice(0, 30) + '…' : state.answers[k];
+        return `<div class="saved-pill"><span class="pill-icon">✦</span>${label}：${val}</div>`;
+      }).join('');
+    if (pills) savedDataHtml = `<div class="saved-data">${pills}</div>`;
+  }
+
+  let fieldsHtml = step.fields.map(f => {
+    const saved = state.answers[f.id] || '';
+    const inputEl = f.type === 'textarea'
+      ? `<textarea id="field-${f.id}" placeholder="${f.placeholder}" oninput="saveAnswer('${f.id}', this.value)">${saved}</textarea>`
+      : `<input type="text" id="field-${f.id}" placeholder="${f.placeholder}" value="${saved}" oninput="saveAnswer('${f.id}', this.value)">`;
+    return `<div class="field-group">
+      <div class="field-label">${f.label} <span class="badge badge-${f.badge}">${f.badge === 'required' ? '必須' : 'ヒント'}</span></div>
+      ${f.hint ? `<div class="hint-text">${f.hint}</div>` : ''}
+      ${inputEl}
+    </div>`;
+  }).join('');
+
+  let aiSectionHtml = '';
+  if (step.aiAction) {
+    const savedResponse = state.aiResponses[step.id] || '';
+    aiSectionHtml = `<div class="ai-section">
+      <button class="ai-trigger-btn" id="aiBtn-${step.id}" onclick="callAI('${step.id}')">
+        <span class="btn-icon">✦</span> ${step.aiAction.buttonLabel}
+      </button>
+      <div class="ai-response-wrap ${savedResponse ? 'visible' : ''}" id="aiResp-${step.id}">
+        <div class="ai-response-header">
+          <div class="ai-avatar">L</div>
+          Lilieのアドバイス
+        </div>
+        <div class="ai-response-body" id="aiRespBody-${step.id}">${savedResponse}</div>
+      </div>
+    </div>`;
+  }
+
+  const isFirst = state.currentStep === 0;
+  const prevBtn = isFirst ? '' : `<button class="btn-prev" onclick="prevStep()">← 戻る</button>`;
+
+  content.innerHTML = `
+    <div class="step-card fade-in">
+      <div class="step-header">
+        <div class="step-number">${state.currentStep}</div>
+        <div class="step-title-wrap">
+          <div class="step-week">Week ${step.week}</div>
+          <div class="step-title">${step.title}</div>
+          ${step.time ? `<div class="step-time">${step.time}</div>` : ''}
+        </div>
+      </div>
+      <div class="step-body">
+        ${savedDataHtml}
+        ${step.purpose ? `<div class="purpose-box"><p>${step.purpose.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p></div>` : ''}
+        ${fieldsHtml}
+        ${aiSectionHtml}
+      </div>
+      <div class="step-footer">
+        ${prevBtn}
+        <button class="btn-next" onclick="nextStep()">次へ進む →</button>
+      </div>
+    </div>`;
+
+  renderSidebar();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// NAVIGATION
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function goToStep(i) {
+  state.currentStep = i;
+  renderMain();
+  document.querySelector('.main').scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+function nextStep() {
+  state.completedSteps.add(steps[state.currentStep].id);
+  if (state.currentStep < steps.length - 1) {
+    state.currentStep++;
+    renderMain();
+    window.scrollTo(0, 0);
+  }
+}
+
+function prevStep() {
+  if (state.currentStep > 0) {
+    state.currentStep--;
+    renderMain();
+    window.scrollTo(0, 0);
+  }
+}
+
+function saveAnswer(id, val) {
+  state.answers[id] = val;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AI CALL
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function callAI(stepId) {
+  const step = steps.find(s => s.id === stepId);
+  if (!step || !step.aiAction) return;
+
+  const btn = document.getElementById(`aiBtn-${stepId}`);
+  const respWrap = document.getElementById(`aiResp-${stepId}`);
+  const respBody = document.getElementById(`aiRespBody-${stepId}`);
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="btn-icon">✦</span> 考えています...';
+  respWrap.classList.add('visible');
+  respBody.innerHTML = `<div class="typing-indicator">
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+  </div>`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: step.aiAction.systemPrompt(state.answers),
+        messages: [{ role: 'user', content: step.aiAction.userPrompt(state.answers) }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || 'エラーが発生しました。もう一度お試しください。';
+    state.aiResponses[stepId] = text;
+    respBody.textContent = text;
+  } catch (e) {
+    respBody.textContent = 'エラーが発生しました。ネットワーク接続を確認してもう一度お試しください。';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = `<span class="btn-icon">✦</span> もう一度生成する`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// INIT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+renderMain();
+</script>
+</body>
+</html>
