@@ -1557,15 +1557,15 @@ function renderSidebar() {
   let html = '';
 
   steps.forEach((step, i) => {
-    if (step.phase && step.phase !== currentWeek) {
-      currentWeek = step.phase;
-      const isWeekPhase = step.week !== null && step.week !== undefined;
+    const weekKey = step.week ?? step.phase ?? null;
+    if (weekKey !== currentWeek) {
+      currentWeek = weekKey;
       const phaseLabel = step.week === 1 ? 'Week 1 — 強みの発掘'
         : step.week === 2 ? 'Week 2 — ロードマップ'
         : step.week === 3 ? 'Week 3 — オファー設計'
         : step.week === 4 ? 'Week 4 — Utage実装'
         : step.phase === 'サポートコンテンツ' ? 'サポートコンテンツ'
-        : step.phase === '卒業テスト' ? '🎓 卒業テスト'
+        : step.phase === '卒業テスト' ? '卒業テスト'
         : '';
       if (phaseLabel) html += `<div class="phase-label">${phaseLabel}</div>`;
     }
