@@ -1769,6 +1769,7 @@ function nextStep() {
   state.completedSteps.add(steps[state.currentStep].id);
   if (state.currentStep < steps.length - 1) {
     state.currentStep++;
+    saveToStorage();
     renderMain();
     window.scrollTo(0, 0);
   }
@@ -1782,12 +1783,23 @@ function prevStep() {
   }
 }
 
+function saveToStorage() {
+  localStorage.setItem('lilie_state', JSON.stringify({
+    currentStep: state.currentStep,
+    answers: state.answers,
+    aiResponses: state.aiResponses,
+    completedSteps: [...state.completedSteps]
+  }));
+}
+
 function saveAnswer(id, val) {
   state.answers[id] = val;
+  saveToStorage();
 }
 
 function toggleQA(key) {
   state.answers[key] = !state.answers[key];
+  saveToStorage();
   renderMain();
 }
 
@@ -1838,6 +1850,23 @@ async function callAI(stepId) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // INIT
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const saved = localStorage.getItem('lilie_state');
+if (saved) {
+  try {
+    const s = JSON.parse(saved);
+    const hasProgress = s.currentStep > 0 || Object.keys(s.answers || {}).length > 0;
+    if (hasProgress && confirm('前回の続きから再開しますか？\n（「キャンセル」で最初からやり直します）')) {
+      state.currentStep = s.currentStep || 0;
+      state.answers = s.answers || {};
+      state.aiResponses = s.aiResponses || {};
+      state.completedSteps = new Set(s.completedSteps || []);
+    } else if (!hasProgress) {
+      // 進捗なしはそのまま
+    } else {
+      localStorage.removeItem('lilie_state');
+    }
+  } catch (e) {}
+}
 renderMain();
 </script>
 </body>
