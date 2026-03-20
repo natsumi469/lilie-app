@@ -265,6 +265,15 @@
     font-size: 12px; color: #5A7A63; font-weight: 500;
   }
   .saved-pill .pill-icon { font-size: 13px; }
+  .saved-block {
+    width: 100%; background: #EFF5F1; border: 1px solid rgba(143,168,150,0.3);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 4px;
+    font-size: 13px; color: #2A1F1A; line-height: 1.8; white-space: pre-wrap;
+  }
+  .saved-block-label {
+    font-size: 11px; color: #5A7A63; font-weight: 600; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 4px;
+  }
 
   /* ── NAVIGATION BUTTONS ── */
   .step-footer {
@@ -1687,14 +1696,22 @@ function renderMain() {
   // Form / form_with_ai
   let savedDataHtml = '';
   if (step.showSavedData) {
+    const FULL_DISPLAY_KEYS = ['curriculum_final'];
+    const LABELS = { job: '職業', concept_final: 'コンセプト', curriculum_final: 'Week2で決めたカリキュラム' };
     const pills = step.showSavedData
-      .filter(k => state.answers[k])
+      .filter(k => state.answers[k] && !FULL_DISPLAY_KEYS.includes(k))
       .map(k => {
-        const label = k === 'job' ? '職業' : k === 'concept_final' ? 'コンセプト' : k;
+        const label = LABELS[k] || k;
         const val = state.answers[k].length > 30 ? state.answers[k].slice(0, 30) + '…' : state.answers[k];
         return `<div class="saved-pill"><span class="pill-icon">✦</span>${label}：${val}</div>`;
       }).join('');
-    if (pills) savedDataHtml = `<div class="saved-data">${pills}</div>`;
+    const blocks = step.showSavedData
+      .filter(k => state.answers[k] && FULL_DISPLAY_KEYS.includes(k))
+      .map(k => {
+        const label = LABELS[k] || k;
+        return `<div style="width:100%"><div class="saved-block-label">✦ ${label}</div><div class="saved-block">${state.answers[k]}</div></div>`;
+      }).join('');
+    if (pills || blocks) savedDataHtml = `<div class="saved-data">${pills}${blocks}</div>`;
   }
 
   let fieldsHtml = step.fields.map(f => {
