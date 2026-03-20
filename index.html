@@ -366,6 +366,33 @@
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(42,31,26,0.12); border-radius: 3px; }
+  /* ── 再開モーダル ── */
+  .resume-overlay {
+    position: fixed; inset: 0; background: rgba(42,31,26,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999; backdrop-filter: blur(4px);
+  }
+  .resume-modal {
+    background: var(--surface); border-radius: 20px;
+    padding: 36px 32px; width: 340px; max-width: 90vw;
+    box-shadow: 0 8px 40px rgba(42,31,26,0.2); text-align: center;
+  }
+  .resume-modal h2 { font-size: 18px; color: var(--deep); margin-bottom: 8px; }
+  .resume-modal p { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+  .resume-modal .btn-row { display: flex; gap: 10px; }
+  .resume-modal .btn-resume {
+    flex: 1; padding: 12px; background: var(--rose); color: white;
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .resume-modal .btn-resume:hover { opacity: 0.85; }
+  .resume-modal .btn-restart {
+    flex: 1; padding: 12px; background: transparent; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 10px; font-size: 14px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .resume-modal .btn-restart:hover { border-color: var(--muted); color: var(--deep); }
+
   /* ── パスワードモーダル ── */
   .pw-overlay {
     position: fixed; inset: 0; background: rgba(42,31,26,0.7);
@@ -1956,24 +1983,55 @@ async function callAI(stepId) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // INIT
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function restoreAndRender(s) {
+  state.currentStep = s.currentStep || 0;
+  state.answers = s.answers || {};
+  state.aiResponses = s.aiResponses || {};
+  state.completedSteps = new Set(s.completedSteps || []);
+  renderMain();
+}
+
+function showResumeModal(s) {
+  const overlay = document.createElement('div');
+  overlay.className = 'resume-overlay';
+  overlay.innerHTML = `
+    <div class="resume-modal">
+      <h2>おかえりなさい</h2>
+      <p>前回の入力内容が保存されています。<br>続きから再開しますか？</p>
+      <div class="btn-row">
+        <button class="btn-resume" id="resumeBtn">続きから再開する</button>
+        <button class="btn-restart" id="restartBtn">最初からやり直す</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('resumeBtn').addEventListener('click', () => {
+    overlay.remove();
+    restoreAndRender(s);
+  });
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    localStorage.removeItem('lilie_state');
+    overlay.remove();
+    renderMain();
+  });
+}
+
 const saved = localStorage.getItem('lilie_state');
 if (saved) {
   try {
     const s = JSON.parse(saved);
     const hasProgress = s.currentStep > 0 || Object.keys(s.answers || {}).length > 0;
-    if (hasProgress && confirm('前回の続きから再開しますか？\n（「キャンセル」で最初からやり直します）')) {
-      state.currentStep = s.currentStep || 0;
-      state.answers = s.answers || {};
-      state.aiResponses = s.aiResponses || {};
-      state.completedSteps = new Set(s.completedSteps || []);
-    } else if (!hasProgress) {
-      // 進捗なしはそのまま
+    if (hasProgress) {
+      renderMain();
+      showResumeModal(s);
     } else {
-      localStorage.removeItem('lilie_state');
+      renderMain();
     }
-  } catch (e) {}
+  } catch (e) {
+    renderMain();
+  }
+} else {
+  renderMain();
 }
-renderMain();
 </script>
 </body>
 </html>
