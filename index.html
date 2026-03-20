@@ -366,6 +366,25 @@
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(42,31,26,0.12); border-radius: 3px; }
+  /* ── LINE提出ボタン ── */
+  .line-submit-wrap {
+    display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .btn-line-copy, .btn-line-open {
+    flex: 1; min-width: 140px; padding: 13px 16px;
+    border-radius: 10px; font-size: 14px; font-weight: 600;
+    cursor: pointer; text-align: center; text-decoration: none;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: opacity 0.2s;
+  }
+  .btn-line-copy {
+    background: var(--sage); color: white; border: none;
+  }
+  .btn-line-open {
+    background: #06C755; color: white; border: none;
+  }
+  .btn-line-copy:hover, .btn-line-open:hover { opacity: 0.85; }
+
   /* ── 再開モーダル ── */
   .resume-overlay {
     position: fixed; inset: 0; background: rgba(42,31,26,0.7);
@@ -1850,6 +1869,15 @@ function renderMain() {
   let aiSectionHtml = '';
   if (step.aiAction) {
     const savedResponse = state.aiResponses[step.id] || '';
+    const lineButtons = step.id === 'grad-submit' ? `
+      <div class="line-submit-wrap" id="lineSubmitWrap" style="${savedResponse ? '' : 'display:none'}">
+        <button class="btn-line-copy" onclick="copyLineText()">
+          <span class="btn-icon">📋</span> 提出文をコピーする
+        </button>
+        <a class="btn-line-open" href="https://line.me/R/ti/p/@lilie" target="_blank" rel="noopener">
+          <span class="btn-icon">💬</span> LINEを開く
+        </a>
+      </div>` : '';
     aiSectionHtml = `<div class="ai-section">
       <button class="ai-trigger-btn" id="aiBtn-${step.id}" onclick="callAI('${step.id}')">
         <span class="btn-icon">✦</span> ${step.aiAction.buttonLabel}
@@ -1861,6 +1889,7 @@ function renderMain() {
         </div>
         <div class="ai-response-body" id="aiRespBody-${step.id}">${savedResponse}</div>
       </div>
+      ${lineButtons}
     </div>`;
   }
 
@@ -1926,6 +1955,18 @@ function prevStep() {
   }
 }
 
+function copyLineText() {
+  const text = state.aiResponses['grad-submit'] || '';
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.btn-line-copy');
+    if (btn) {
+      btn.innerHTML = '<span class="btn-icon">✓</span> コピーしました！';
+      setTimeout(() => { btn.innerHTML = '<span class="btn-icon">📋</span> 提出文をコピーする'; }, 2000);
+    }
+  });
+}
+
 function saveToStorage() {
   localStorage.setItem('lilie_state', JSON.stringify({
     currentStep: state.currentStep,
@@ -1982,6 +2023,10 @@ async function callAI(stepId) {
     const text = data.content?.[0]?.text || 'エラーが発生しました。もう一度お試しください。';
     state.aiResponses[stepId] = text;
     respBody.textContent = text;
+    if (stepId === 'grad-submit') {
+      const wrap = document.getElementById('lineSubmitWrap');
+      if (wrap) wrap.style.display = '';
+    }
   } catch (e) {
     respBody.textContent = 'エラーが発生しました。ネットワーク接続を確認してもう一度お試しください。';
   }
