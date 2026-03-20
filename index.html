@@ -796,12 +796,662 @@ ${answers['curriculum_custom'] || '特になし'}
     }
   },
 
+  // ── WEEK 4 ──
+  {
+    id: 'w4-intro', week: 4, phase: 'フェーズ1：設計',
+    navLabel: 'Week 4 へ進む',
+    type: 'intro',
+    icon: '🏰',
+    title: 'Week 4：はじめてのUtage｜0から完成まで完全ガイド',
+    body: `このWeekのゴールはシンプルです。\n\n「Utageが何かわからなくても、画面を見ながら順番にやれば<strong>自分のスクールが完成する</strong>」\n\nデザインも文章も仮でOK。完璧じゃなくてOK。<strong>「動くものができている」ことだけがゴール</strong>です。\n\nWeek4-2では、作った教材の完成度をAIと一緒にチェックして、「これ売れるな」という確信を持てる状態まで仕上げます。`,
+    time: '作業時間：約60〜90分'
+  },
+  {
+    id: 'w4-register', week: 4, phase: 'フェーズ1：設計',
+    navLabel: 'Utageに登録する',
+    type: 'guide',
+    title: 'ステップ1：Utageに登録する（10分）',
+    guideItems: [
+      {
+        step: '①',
+        title: '登録前に準備するもの',
+        body: 'メールアドレス（Gmail推奨）とパスワードを用意してください。後で使うのでメモしておきましょう。'
+      },
+      {
+        step: '②',
+        title: 'Lilie受講生限定リンクから登録（14日間無料）',
+        body: '以下のリンクから登録してください。ライトプランで問題ありません。',
+        link: { label: 'Utage登録リンク（14日間無料）', url: 'https://utage-system.com/p/eE3oLZbDaYUj' }
+      },
+      {
+        step: '③',
+        title: '名前・メール・電話番号・クレジットカードを入力してログイン',
+        body: 'この時点で「Utageに入れたらOK」です。まだ何も設定しなくて大丈夫。'
+      }
+    ],
+    checkItems: ['Utageにログインできた']
+  },
+  {
+    id: 'w4-site', week: 4, phase: 'フェーズ1：設計',
+    navLabel: '会員サイトを作る',
+    type: 'guide',
+    title: 'ステップ2-3：会員サイト（お城の土台）を作る',
+    guideItems: [
+      {
+        step: '①',
+        title: '会員サイトを新規作成する',
+        body: '管理画面で「会員サイト」を選択 →「新規作成」→ 名前を入力（例：Basicコース、〇〇講座 基礎編）\nデザインや細かい設定は全部スキップでOK！',
+        link: { label: 'コース設定マニュアル', url: 'https://help.utage-system.com/archives/1889' }
+      },
+      {
+        step: '②',
+        title: '「トップページ」があることを確認',
+        body: '会員サイトを開いて「トップページ」が表示されれば成功。ここが受講生がログインして最初に見る画面です。'
+      },
+      {
+        step: '③',
+        title: 'デザインを変更する（任意・後回しOK）',
+        body: '背景色・ロゴ・画像などを変更できます。やる気が出なかったら後回しにしてOKです。',
+        link: { label: 'デザイン設定マニュアル', url: 'https://help.utage-system.com/archives/4844' }
+      }
+    ],
+    checkItems: ['会員サイトが1つできている', 'トップページが表示された']
+  },
+  {
+    id: 'w4-lessons', week: 4, phase: 'フェーズ1：設計',
+    navLabel: 'レッスンを作る',
+    type: 'form_with_ai',
+    title: 'ステップ4：レッスン（12回分）の箱を作る',
+    purpose: 'まずはレッスンの<strong>「箱」を先に作ります</strong>。中身は空でOK。Week2で決めた全12回のタイトルをUtageに並べることがゴールです。\n\n箱ができたら、AIに12回分の概要文を一気に作ってもらいます。',
+    showSavedData: ['curriculum_final', 'concept_final'],
+    fields: [
+      {
+        id: 'lesson_overview_done',
+        label: 'Utageでレッスン12個の作成は完了しましたか？',
+        badge: 'required',
+        hint: '会員サイト内「レッスン追加」→ Week2で決めたタイトルを12個入力。中身は空でOK。',
+        type: 'text',
+        placeholder: '完了したら「完了しました」と入力してください'
+      }
+    ],
+    guideLink: { label: 'レッスン追加マニュアル', url: 'https://help.utage-system.com/archives/1897' },
+    aiAction: {
+      buttonLabel: '12回分の概要文を一気に生成する',
+      systemPrompt: () => `あなたはオンライン講座の教材ライターです。
+受講生が「このレッスンを受ければ何が変わるか」を直感的に理解できる、短くて魅力的な概要文を書くのが得意です。`,
+      userPrompt: (answers) => `以下の講座のレッスン概要文を12回分、一気に作成してください。
+
+【コンセプト】${answers['concept_final'] || answers['concept_choice'] || ''}
+【全12回カリキュラム】
+${answers['curriculum_final'] || '（Week2で作成したカリキュラムを参照してください）'}
+
+各レッスンの概要文の形式：
+・2〜3文（80〜120字程度）
+・「このレッスンでは〇〇します」という形で始める
+・受講生が「早くこのレッスンを受けたい！」と思う言葉を使う
+・専門用語は使わない
+
+12回分すべて出力してください。`
+    }
+  },
+  {
+    id: 'w4-selfcheck', week: 4, phase: 'フェーズ1：設計',
+    navLabel: '受講生として確認する',
+    type: 'guide',
+    title: 'ステップ5：自分を受講生として入れてみる（超重要）',
+    guideItems: [
+      {
+        step: '①',
+        title: '受講生を追加する',
+        body: 'Utage管理画面 →「受講生管理」→「受講生追加」\n自分のサブメールアドレスを入力、パスワードを設定して保存。',
+        link: { label: '受講生管理マニュアル', url: 'https://help.utage-system.com/archives/1917' }
+      },
+      {
+        step: '②',
+        title: '受講コースを追加する',
+        body: '登録した受講生をクリック →「コース追加」で作成したコースを追加。\n⚠️ このステップを飛ばすと会員サイトが白紙になります！'
+      },
+      {
+        step: '③',
+        title: '実際にログインして確認する',
+        body: '会員サイト >「URL管理」>「ログインURL」からログイン。\n\nこの瞬間が一番大事です。「これ、もう売れるやつだ…」という実感が生まれます。'
+      }
+    ],
+    checkItems: ['自分のサブアカウントでログインできた', '12個のレッスンが並んでいるのを確認できた', '「これ人に売れるな」と思えた']
+  },
+  {
+    id: 'w4-sales', week: 4, phase: 'フェーズ1：設計',
+    navLabel: '販売の準備をする',
+    type: 'guide',
+    title: 'ステップ6：今日からできる「超シンプル販売」',
+    guideItems: [
+      {
+        step: '①',
+        title: 'SNS・LINEで募集する',
+        body: 'Week3で作ったキャッチコピーとコンセプトを使って、まずは知り合いに声をかけましょう。'
+      },
+      {
+        step: '②',
+        title: '銀行振込 / PayPayで入金',
+        body: '決済の自動化はStandardコースで扱います。今は手動でOK。'
+      },
+      {
+        step: '③',
+        title: 'Utageで受講生を手動追加',
+        body: '入金確認 → 管理画面から受講生を手動追加 → コースを紐づける。'
+      },
+      {
+        step: '④',
+        title: 'ログイン案内を送る',
+        body: 'ログインURL・メールアドレス・パスワードを受講生に連絡。\n💡 パスワードは事前に受講生に伝えておきましょう。'
+      }
+    ],
+    checkItems: ['販売フローが頭に入った']
+  },
+
+  // ── WEEK 4-2 ──
+  {
+    id: 'w42-intro', week: 4, phase: 'フェーズ1：設計',
+    navLabel: 'Week 4-2 へ進む',
+    type: 'intro',
+    icon: '💎',
+    title: 'Week 4-2：「未完成」を「販売可能」に変える3ステップ',
+    body: `ここでは「考える」ことはしません。\n\n<strong>すでに作った内容を、Utageに入れて「見える講座」にするだけ</strong>です。\n\n各レッスンに「目的・最低1つの価値・合格ライン」が入っていれば、それは販売していい講座です。AIと一緒に完成度をチェックしていきましょう。`,
+    time: '作業時間：自分のペースでOK'
+  },
+  {
+    id: 'w42-check1', week: 4, phase: 'フェーズ1：設計',
+    navLabel: '各レッスンをチェックする',
+    type: 'form_with_ai',
+    title: 'やること①②：各レッスンの「最低限」を確認する',
+    purpose: '各レッスンに以下の<strong>3点が入っているか</strong>確認します。\n✦ この回の目的（1つの変化）\n✦ 迷ったらここだけやればOK\n✦ 次に進んでいい合格ライン\n\n文章は短くていいです。後から追加してもいいです。',
+    fields: [
+      {
+        id: 'lesson_check_input',
+        label: 'チェックしたいレッスンの内容を貼り付けてください',
+        badge: 'required',
+        hint: 'Utageに入れたレッスンの文章・ワーク内容などをそのままコピペしてOK。1レッスンずつでも、まとめてでも',
+        type: 'textarea',
+        placeholder: '例：\nレッスン3「強みのかけ算を決める」\nこのレッスンでは、Week1の回答をもとに...'
+      }
+    ],
+    aiAction: {
+      buttonLabel: 'AIに「販売してOKか」チェックしてもらう',
+      systemPrompt: () => `あなたはオンライン講座の品質チェックの専門家です。
+「未完成でも販売していい状態」の基準を明確に理解しています。
+「足りない」「もっと必要」ではなく、「ここまでなら売っていい」という現実的な視点でフィードバックしてください。
+講師を萎縮させず、前に進む勇気を与えてください。`,
+      userPrompt: (answers) => `以下のレッスン内容を確認してください。
+
+【コンセプト】${answers['concept_final'] || answers['concept_choice'] || ''}
+【レッスン内容】
+${answers['lesson_check_input'] || ''}
+
+確認してほしいこと：
+1. このレッスンに「最低限入っていればOK」な要素を3つ
+2. 今の内容で、すでに満たしている点
+3. もし1つだけ足すなら何を足すと価値が成立するか
+4. このレッスンが「販売してOK」と言える理由
+
+※「足りない・もっと必要」ではなく「ここまでなら売っていい」という視点でお願いします。`
+    }
+  },
+  {
+    id: 'w42-polish', week: 4, phase: 'フェーズ1：設計',
+    navLabel: 'レッスンを整える',
+    type: 'form_with_ai',
+    title: 'やること②③：「目的・合格ライン・最低価値」を整える',
+    purpose: 'レッスンをUtageに入れる直前の仕上げです。AIに<strong>「受講生が迷わず進めるレッスン構成」</strong>に整えてもらいます。',
+    fields: [
+      {
+        id: 'lesson_polish_input',
+        label: '整えたいレッスンのタイトルと素材を入力してください',
+        badge: 'required',
+        hint: 'タイトル・起こしたい変化・今ある素材（文章・ワーク等）を入力',
+        type: 'textarea',
+        placeholder: '例：\n【タイトル】Week3 売れるオファーを作る\n【変化】自信を持って価格を提示できるようになる\n【素材】松竹梅の価格表・AIが作った説明文'
+      }
+    ],
+    aiAction: {
+      buttonLabel: 'レッスン構成を整えてもらう',
+      systemPrompt: () => `あなたはオンライン講座の構成デザインの専門家です。
+受講生が「途中で止まらない」設計を作ることが得意です。
+短くわかりやすい文章で、初心者が安心して進める構成を提案してください。`,
+      userPrompt: (answers) => `以下のレッスンを「受講生が迷わず進めるレッスン構成」に整理してください。
+
+${answers['lesson_polish_input'] || ''}
+
+出力してほしい内容：
+① この回の目的（1文）
+② 迷ったらここだけやればOK（1〜2行）
+③ 次に進んでいい合格ライン（チェックボックス形式）
+④ この回で最低限伝われば価値が成立するポイント
+
+※「売ってはいけない理由」は出さないでください。
+※初心者が安心する表現でお願いします。`
+    }
+  },
+  {
+    id: 'w42-final', week: 4, phase: 'フェーズ1：設計',
+    navLabel: '最終ジャッジをもらう',
+    type: 'form_with_ai',
+    title: '「これは売っていい講座か？」最終ジャッジ',
+    purpose: '全12レッスンを入れ終えたら、最後に<strong>AIに「販売前の最終確認」</strong>をしてもらいます。不安を消して、自信を持って第1期生を迎えましょう。',
+    fields: [
+      {
+        id: 'final_goal',
+        label: 'この講座のゴール（受講生が3ヶ月後にどうなるか）',
+        badge: 'required',
+        hint: 'Week1〜3で決めたゴールをそのまま入力してOK',
+        type: 'textarea',
+        placeholder: '例：自分のネイル技術を活かした高単価講座を立ち上げ、月5万円の副収入を得る'
+      },
+      {
+        id: 'final_worry',
+        label: '正直、今不安に思っていること',
+        badge: 'hint',
+        hint: '「動画がない」「説明が薄い気がする」など何でも正直に',
+        type: 'textarea',
+        placeholder: '例：動画がまだ2本しかない、Week7の内容がスカスカな気がする...'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '「販売してOK」の最終ジャッジをもらう',
+      systemPrompt: () => `あなたはオンライン講座の販売判断の専門家です。
+「完璧主義の罠」から講師を救い、現実的な基準で「今すぐ販売していい理由」を伝えることが得意です。
+厳しさより、現実的で背中を押す判断をしてください。`,
+      userPrompt: (answers) => `私のオンライン講座を「今の状態で販売していいか」判断してください。
+
+【講座の前提】
+・全12回
+・各回に目的・合格ライン・最低1つの価値あり
+・コンセプト：${answers['concept_final'] || answers['concept_choice'] || ''}
+・ゴール：${answers['final_goal'] || ''}
+
+【私が不安に思っていること】
+${answers['final_worry'] || '特になし'}
+
+お願いしたいこと：
+1. この講座が「販売してOK」と言える理由（背中を押してください）
+2. 今はやらなくていい改善点（やらなくていい理由も添えて）
+3. 初めて売る講座として、これは適切な完成度か
+
+※厳しさより、現実的な判断をしてください。`
+    }
+  },
+
+  // ── Q&A ──
+  {
+    id: 'qa', week: null, phase: 'サポートコンテンツ',
+    navLabel: '不安になったら読む Q&A',
+    type: 'qa',
+    title: '不安になったら読むページ（Q&A）',
+    categories: [
+      {
+        label: '全体の進め方',
+        items: [
+          { q: 'どの順番で進めればいい？', a: 'Week1 → 2 → 3 → 4の順でOK。疲れている日は「1つだけやる」でも進んでいます。', next: '今のWeekの「最初のステップ」だけ着手してOK。' },
+          { q: '途中でつまずいたら、何から見直せばいい？', a: '①ゴール（誰をどこへ）→②12回の目次→③オファーの順に戻ります。迷いの原因は9割ここです。', next: 'Week1の「勝ち位置（コンセプト）」を1文で言えるか確認。' },
+          { q: 'AIの回答がしっくりきません…', a: 'それでOKです。あなたの感性が正しいサイン。AIは平均点を出します。あなたの講座は平均点じゃ勝てません。', next: '「なんか違う」を言語化してAIに追指示。例：「もっと女性に優しい言葉に」「私の体験を強めに出して」' },
+          { q: 'AIが途中で止まる／長すぎます', a: '止まったら「続きを書いて」。長すぎたら「短くして」でOK。', next: '止まる→「続きを書いて」/ 長い→「300文字に要約して」' },
+        ]
+      },
+      {
+        label: 'Week1（コンセプト）',
+        items: [
+          { q: '「勝ち位置」が決めきれません', a: '決めきれなくてOK。まず仮決めで進みます。コンセプトは「作りながら強くなる」ものです。', next: '3案のうち「一番ワクワクする」案を仮採用。' },
+          { q: '私の経験って講座になるほど価値ありますか？', a: '価値は"結果"ではなく"再現できるプロセス"にあります。あなたが自然にやっている判断基準が、初心者には喉から手が出るノウハウです。', next: '失敗談・判断基準・工夫を1つだけ書く。' },
+        ]
+      },
+      {
+        label: 'Week2（12回カリキュラム）',
+        items: [
+          { q: '12回の目次はできたけど、中身が作れる気がしません', a: '今は中身を作らなくてOKです。中身はWeek4の追加ワーク（補助教材）で作ります。', next: '12回の「タイトル」を未来が見える言葉に整えるだけでOK。' },
+          { q: 'AIが作った12回が"普通"に見えます', a: '普通でOK。ここから"あなたの神ノウハウ"を上書きします。差別化は「順番」より「中身の言葉」と「あなたの視点」です。', next: '12回の中に「あなたの秘密の回」を1つ入れる。' },
+        ]
+      },
+      {
+        label: 'Week3（価格・オファー）',
+        items: [
+          { q: '松竹梅を作ったけど、結局どれを売ればいい？', a: '最初は"松"（30〜40万の伴走型）からでOKです。実績・声・勝ちパターンがない状態で低単価自動化を作ると遠回りになります。', next: '「松」だけを"最初の商品"として確定してください。' },
+          { q: '高すぎて売れる気がしません…', a: '高いのは"結果が出る設計"に自信がある証拠です。高単価は「手厚いサポート」とセットにすると納得されます。', next: 'サポート内容（面談・添削・相談）を1つ足して松を強化。' },
+          { q: '最初からオートウェビナーにしたいです', a: '気持ちはOK。でもBasicでは"最初の勝ちパターン"を先に作ります。自動化は、売れる形が固まってからが最短です。', next: 'まずは"知り合い1人に売る"前提で設計してOK。' },
+        ]
+      },
+      {
+        label: 'Week4（Utage構築）',
+        items: [
+          { q: 'Utageって何から触ればいい？', a: '①会員サイト作成→②レッスン作成→③受講生追加の順です。設定を完璧にしようとしなくてOK。', next: 'まず会員サイトを作って「TOPが表示される」まで。' },
+          { q: 'レッスンの中身が薄い気がします', a: '"各回に最低1価値"が入っていれば販売してOKです。動画がなくてもOK。文章・ワーク・判断基準があれば成立します。', next: '各レッスンに「目的／迷ったらここだけ／合格ライン」を入れる。' },
+          { q: 'Utageに入れたけど、これで完成と言っていい？', a: '12レッスンすべてに「目的・最低1価値・合格ライン」があり、自分でログインして確認できていれば完成です。', next: '自分を受講生として追加してスマホで確認。' },
+          { q: '手動で受講生を追加したのに、どこで講座が見れるの？', a: '"受講生にコースを紐づけたか"を確認してください。受講生を追加しただけだと、講座が割り当たっていない場合があります。', next: '受講生管理で「どのコースを追加しているか」を確認。' },
+          { q: '最初の販売って、具体的にどうやるの？', a: 'SNS・LINE・知り合いに募集 → 銀行振込/PayPayで入金確認 → Utageで手動追加 → ログイン情報を送付。これだけです。', next: '「知り合い1人」を想定して案内文を作る。' },
+        ]
+      },
+    ]
+  },
+
+  // ── SUPPORT MATERIALS ──
+  {
+    id: 'support-intro', week: null, phase: 'サポートコンテンツ',
+    navLabel: '📘 補助教材（5回）',
+    type: 'intro',
+    icon: '📘',
+    title: '講座完成サポート教材（全5回）',
+    body: `Week4-2の「やること③」で使う補助教材です。\n\n「12回の目次はできたけど、中身が作れるか不安」な方のための教材です。ここでは<strong>考えることはしません</strong>。すでに作った内容を「講座として成立する状態」に整えるだけです。\n\n5回のワークを終えると、各レッスンに「目的・変化・合格ライン」が揃い、自信を持ってUtageに入れられる状態になります。`,
+    time: '全5回・自分のペースでOK'
+  },
+  {
+    id: 'support-1', week: null, phase: 'サポートコンテンツ',
+    navLabel: '第1回：12回の役割を決める',
+    type: 'form_with_ai',
+    title: '第1回：ゴールから逆算して「12回の役割」を決める',
+    purpose: '各レッスンを「説明の並び」から<strong>「ゴールへの物語」</strong>に変えます。\n\n12回それぞれに「役割」がつくと、受講生も講師自身も迷わなくなります。今は内容ではなく<strong>「役割」</strong>を決めるだけです。',
+    fields: [
+      {
+        id: 'support1_goal',
+        label: '最終ゴールを1文で（Week1で決めたもの）',
+        badge: 'required',
+        hint: '「この講座を終えた受講生は、〇〇の状態になっている」という形で',
+        type: 'textarea',
+        placeholder: '例：自分の経験を講座として販売できている・最初の売上を立てた経験がある'
+      },
+      {
+        id: 'support1_roles',
+        label: '12回それぞれの「役割」（一言ずつ）',
+        badge: 'required',
+        hint: '内容ではなく役割です。例：第1回「方向性を決める」第2回「道筋を描く」',
+        type: 'textarea',
+        placeholder: '第1回：\n第2回：\n第3回：\n第4回：\n第5回：\n第6回：\n第7回：\n第8回：\n第9回：\n第10回：\n第11回：\n第12回：'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '役割の整合性をチェックしてもらう',
+      systemPrompt: () => `あなたはオンライン講座の設計コンサルタントです。
+受講生がゴールに到達できるかどうかの視点で、講座の構造を評価します。
+温かく、建設的なフィードバックをしてください。`,
+      userPrompt: (answers) => `以下の講座の構造を評価してください。
+
+【最終ゴール】${answers['support1_goal'] || ''}
+【12回の役割】
+${answers['support1_roles'] || ''}
+【コンセプト】${answers['concept_final'] || answers['concept_choice'] || ''}
+
+確認してほしいこと：
+1. ゴールまでの流れに無理・飛躍がないか
+2. 欠けている「役割」や「フェーズ」があれば指摘
+3. 全体の流れを1〜2文で表現すると？
+
+※「直すべき」ではなく「このままでも成立する理由」も一緒に伝えてください。`
+    }
+  },
+  {
+    id: 'support-2', week: null, phase: 'サポートコンテンツ',
+    navLabel: '第2回：1レッスン＝1変化',
+    type: 'form_with_ai',
+    title: '第2回：1レッスン＝1変化を成立させる',
+    purpose: '受講生は「知識を集めに来ているのではありません」。\n\n<strong>「できるようになりたい」</strong>それだけです。各レッスンの「到達点」と「合格ライン」を決めます。',
+    fields: [
+      {
+        id: 'support2_changes',
+        label: '1〜2回分のレッスンを選んで入力してください',
+        badge: 'required',
+        hint: '「タイトル」と「この回を終えた受講生が何ができるようになるか」を書いてください',
+        type: 'textarea',
+        placeholder: '例：\n【第3回 売れるオファーを作る】\n・できるようになること：自信を持って価格を提示できる\n・合格ライン：松竹梅の3コースが仮決めできている'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '変化と合格ラインを磨いてもらう',
+      systemPrompt: () => `あなたはオンライン講座の受講生体験設計の専門家です。
+「受講生が止まらない設計」を作ることが得意です。`,
+      userPrompt: (answers) => `以下のレッスンの「変化」と「合格ライン」を磨いてください。
+
+${answers['support2_changes'] || ''}
+
+出力してほしいこと：
+1. 「できるようになること」をより具体的・感情的な言葉に
+2. 合格ラインが「厳しすぎず・甘すぎない」適切な設定か評価
+3. 受講生が「よし、次に進もう」と思えるような合格ラインの言い換え案`
+    }
+  },
+  {
+    id: 'support-3', week: null, phase: 'サポートコンテンツ',
+    navLabel: '第3回：価値が成立する中身を作る',
+    type: 'form_with_ai',
+    title: '第3回：未完成でも「価値が成立する中身」を作る',
+    purpose: '完成していない＝価値がない、ではありません。\n\n各レッスンに<strong>「これだけは受講生に渡せる」</strong>ものが1つあれば、それは価値が成立している状態です。やらなくていい作り込みも一緒に整理します。',
+    fields: [
+      {
+        id: 'support3_value',
+        label: '気になっているレッスン（薄いかも？と思うもの）',
+        badge: 'required',
+        hint: 'タイトルと「今入っている内容」を書いてください。ない・少ないでも正直に',
+        type: 'textarea',
+        placeholder: '例：\n【第8回 SNS集客の基礎】\n今の内容：「投稿頻度は毎日が理想」という文章だけ。これじゃ薄い気がしている'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '「最低1価値」を一緒に見つけてもらう',
+      systemPrompt: () => `あなたはオンライン講座の中身評価の専門家です。
+「販売してOKなライン」を現実的に判断し、講師が自信を持てるよう背中を押すことが得意です。`,
+      userPrompt: (answers) => `以下のレッスンに「最低1価値」があるかを確認してください。
+
+${answers['support3_value'] || ''}
+【コンセプト・講師背景】${answers['job'] || ''}・${answers['concept_final'] || answers['concept_choice'] || ''}
+
+確認してほしいこと：
+1. 今の内容で「価値が成立している」と言えるか
+2. もし1つだけ追加するなら何を入れると価値が強くなるか（動画不要・文章だけでOK）
+3. 「やらなくていい作り込み」があれば教えて（完璧主義の罠を外して）
+
+※「足りない」ではなく「これで売っていい理由」を先に伝えてください。`
+    }
+  },
+  {
+    id: 'support-4', week: null, phase: 'サポートコンテンツ',
+    navLabel: '第4回：迷わず進める導線を入れる',
+    type: 'form_with_ai',
+    title: '第4回：受講生が迷わず進める「導線」を入れる',
+    purpose: '内容が良いのに脱落する講座の原因はほぼ1つ。<strong>「現在地が見えない」</strong>ことです。\n\n全レッスンに共通テンプレを入れるだけで、受講生は一人でも進めるようになります。',
+    fields: [
+      {
+        id: 'support4_template',
+        label: '全レッスンに入れたい「共通テンプレ」を確認してください',
+        badge: 'hint',
+        hint: '以下の3点が各レッスンに入っているか確認。まだの場合は「未」と書いてください',
+        type: 'textarea',
+        placeholder: '① この回の目的：入っている / 未\n② 迷ったらここだけ：入っている / 未\n③ 次に進んでいい合格ライン：入っている / 未'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '共通テンプレの文章を作ってもらう',
+      systemPrompt: () => `あなたはオンライン講座の「受講生体験」設計の専門家です。
+受講生が迷わず進めるシンプルなテンプレートを作るのが得意です。`,
+      userPrompt: (answers) => `以下の講座の「全レッスン共通テンプレ」のサンプル文を作ってください。
+
+【コンセプト】${answers['concept_final'] || answers['concept_choice'] || ''}
+【対象受講生】${answers['persona_desc'] || '美容・クリエイティブ系の女性起業家'}
+【確認状況】${answers['support4_template'] || ''}
+
+出力してほしいこと：
+1. 「この回の目的」の書き方テンプレ（〇〇という状態になります 形式）
+2. 「迷ったらここだけ」の書き方テンプレ（1〜2行）
+3. 「次に進んでいい合格ライン」の書き方テンプレ（チェックボックス形式）
+
+各テンプレは穴埋め形式で、どのレッスンにも使えるものにしてください。`
+    }
+  },
+  {
+    id: 'support-5', week: null, phase: 'サポートコンテンツ',
+    navLabel: '第5回：自分にOKを出す',
+    type: 'form_with_ai',
+    title: '第5回：「講座としての完成」を自分で決める',
+    purpose: 'このレッスンの目的は、<strong>自分で自分にOKを出すこと</strong>です。\n\nここまで来たあなたはもう「講座を作れない人」ではありません。',
+    fields: [
+      {
+        id: 'support5_check',
+        label: '完成チェックリスト（✔/△/✕で記入してください）',
+        badge: 'required',
+        hint: '✔=できている　△=だいたいできている　✕=まだ',
+        type: 'textarea',
+        placeholder: '[ ] 最終ゴールを1文で言える\n[ ] 12回すべてに役割がある\n[ ] 各回に最低1つの価値がある\n[ ] 合格ラインが設定されている\n[ ] 未完成でも販売していいと理解している'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '「あなたの講座は完成している」と言ってもらう',
+      systemPrompt: () => `あなたはオンライン講座コーチです。
+受講生が「自分の講座に自信を持てない」状態から「これは売っていい」と確信できるよう背中を押すことが専門です。
+温かく、でも具体的に。完璧主義の罠から解放してください。`,
+      userPrompt: (answers) => `以下のチェックリストをもとに、私の講座の「完成状態」を評価してください。
+
+【チェック結果】
+${answers['support5_check'] || ''}
+【コンセプト】${answers['concept_final'] || answers['concept_choice'] || ''}
+【不安に思っていること】${answers['final_worry'] || '特になし'}
+
+お願いしたいこと：
+1. このチェック結果で「販売してOK」な理由
+2. ✕がある項目の「今はやらなくていい理由」
+3. 最後に、私への応援メッセージ（1〜2文）
+
+※最後の応援メッセージは、本当に心に響く言葉でお願いします。`
+    }
+  },
+
+  // ── GRADUATION TEST ──
+  {
+    id: 'grad-intro', week: null, phase: '卒業テスト',
+    navLabel: '🎓 卒業テストへ進む',
+    type: 'intro',
+    icon: '🎓',
+    title: 'Lilie Basicコース 卒業テスト',
+    body: `このテストは「正解を当てるためのテスト」ではありません。\n\n<strong>「あなたが自分の講座を売っていい状態に到達したか」</strong>を一緒に確認するためのものです。\n\n提出内容は2点のみ。AIに作ってもらった文章をそのまま送るだけでOKです。`,
+    time: '所要時間：約20分'
+  },
+  {
+    id: 'grad-concept', week: null, phase: '卒業テスト',
+    navLabel: '提出①：コンセプト概要を作る',
+    type: 'form_with_ai',
+    title: '提出①：AIで「講座コンセプト & カリキュラム概要」を作る',
+    purpose: 'Week1〜4で作ったすべての素材が集約される瞬間です。以下を入力してAIに整えてもらった文章を、<strong>修正せずそのままLINEに提出</strong>してください。',
+    fields: [
+      {
+        id: 'grad_coursename',
+        label: '講座名',
+        badge: 'required',
+        hint: 'まだ決まっていなければ仮タイトルでOK',
+        type: 'text',
+        placeholder: '例：ネイリストのための高単価オンライン講座構築プログラム'
+      },
+      {
+        id: 'grad_curriculum_list',
+        label: '全12回のレッスンタイトル一覧',
+        badge: 'required',
+        hint: 'Week2で作ったカリキュラムをそのまま貼り付けてください',
+        type: 'textarea',
+        placeholder: '第1回：\n第2回：\n...'
+      }
+    ],
+    aiAction: {
+      buttonLabel: '提出用の概要文を生成する',
+      systemPrompt: () => `あなたはオンライン講座の紹介文ライターです。
+第三者にも伝わる、温かみのある講座紹介文を作るのが得意です。`,
+      userPrompt: (answers) => `以下の情報をもとに、講座の紹介文を整理してください。
+
+【講座名】${answers['grad_coursename'] || ''}
+【職業・コンセプト】${answers['job'] || ''} / ${answers['concept_final'] || answers['concept_choice'] || ''}
+【対象受講生の悩み】${answers['persona_desc'] || ''}
+【最終ゴール】${answers['final_goal'] || answers['curriculum_goal'] || ''}
+【全12回のレッスンタイトル】
+${answers['grad_curriculum_list'] || answers['curriculum_final'] || ''}
+
+出力してほしい内容：
+① 講座コンセプト（どんな人が、どんな未来に行けるか・100字程度）
+② 講座のゴール（1〜2文）
+③ 全12回カリキュラムの概要（各回1〜2行の説明つき）
+
+条件：初心者にもわかる言葉・売り込み感なし・安心感のあるトーン`
+    }
+  },
+  {
+    id: 'grad-checklist', week: null, phase: '卒業テスト',
+    navLabel: '提出②：チェックリスト',
+    type: 'graduation_check',
+    title: '提出②：講座完成チェックリスト（自己判定）',
+    checkGroups: [
+      {
+        label: '📐 講座設計',
+        items: ['誰を、どこへ導く講座か1文で言える', '最初に売る講座は「伴走型・高単価」と決めている', 'この講座で"結果が出る理由"を説明できる']
+      },
+      {
+        label: '📚 カリキュラム',
+        items: ['全12回のタイトルが決まっている', '各回に「目的」がある', '各回に「最低1つの価値（学び・ワーク・判断基準）」がある', '各回に「ここまででOK」という合格ラインがある']
+      },
+      {
+        label: '🏰 実装（Week4）',
+        items: ['Utageに会員サイトを作成した', '12回すべてをUtageに格納した', '自分でログインして内容を確認した', '受講生を手動で追加できる']
+      },
+      {
+        label: '💪 マインド',
+        items: ['未完成でも販売していいと理解している', '知り合い1人に売るイメージができる', '「これはもう講座だ」と自分で思える']
+      }
+    ]
+  },
+  {
+    id: 'grad-submit', week: null, phase: '卒業テスト',
+    navLabel: '提出文を作成する',
+    type: 'form_with_ai',
+    title: 'LINE提出テンプレを完成させる',
+    purpose: '提出①②の内容をまとめて、<strong>Lilie公式LINEに送る提出文</strong>を完成させます。AIが作った文章はそのままでOKです。',
+    fields: [
+      {
+        id: 'grad_worry_final',
+        label: '今いちばん不安な点（1行でOK）',
+        badge: 'hint',
+        hint: '正直に書いてください。なければ「特になし」でOK',
+        type: 'text',
+        placeholder: '例：Week8のコンテンツがまだ薄い気がしている'
+      }
+    ],
+    aiAction: {
+      buttonLabel: 'LINE提出テンプレを完成させる',
+      systemPrompt: () => `あなたはオンライン講座の受講生サポートアシスタントです。
+受講生が講師に送る提出文を、丁寧で読みやすい形に整えてください。`,
+      userPrompt: (answers) => `以下の内容を「Basicコース卒業テスト提出文」として整えてください。
+
+【提出者情報】
+・職業：${answers['job'] || ''}
+・コンセプト：${answers['concept_final'] || answers['concept_choice'] || ''}
+
+【①講座コンセプト & カリキュラム概要】
+${answers[`aiResp_grad-concept`] || '（提出①のAI生成文をご確認ください）'}
+
+【②いちばん不安な点】
+${answers['grad_worry_final'] || '特になし'}
+
+出力形式（そのままLINEに貼れる形で）：
+---
+【Basicコース 卒業テスト提出】
+
+① 講座コンセプト & カリキュラム概要
+（整えた文章）
+
+② 講座完成チェックリスト
+（チェック結果のサマリー：全項目✔ / 〇〇にのみ△）
+
+③ 今いちばん不安な点
+（1行）
+---`
+    }
+  },
+
   // ── COMPLETE ──
   {
     id: 'complete', week: null, phase: '',
-    navLabel: '設計フェーズ完了！',
+    navLabel: 'Basicコース完了！',
     type: 'complete',
-    title: 'フェーズ1：設計 完了！',
+    title: 'Basicコース 完了！',
   }
 ];
 
@@ -814,9 +1464,16 @@ function renderSidebar() {
   let html = '';
 
   steps.forEach((step, i) => {
-    if (step.week && step.week !== currentWeek) {
-      currentWeek = step.week;
-      const phaseLabel = step.week === 1 ? 'Week 1 — 強みの発掘' : step.week === 2 ? 'Week 2 — ロードマップ' : step.week === 3 ? 'Week 3 — オファー設計' : '';
+    if (step.phase && step.phase !== currentWeek) {
+      currentWeek = step.phase;
+      const isWeekPhase = step.week !== null && step.week !== undefined;
+      const phaseLabel = step.week === 1 ? 'Week 1 — 強みの発掘'
+        : step.week === 2 ? 'Week 2 — ロードマップ'
+        : step.week === 3 ? 'Week 3 — オファー設計'
+        : step.week === 4 ? 'Week 4 — Utage実装'
+        : step.phase === 'サポートコンテンツ' ? 'サポートコンテンツ'
+        : step.phase === '卒業テスト' ? '🎓 卒業テスト'
+        : '';
       if (phaseLabel) html += `<div class="phase-label">${phaseLabel}</div>`;
     }
 
@@ -846,19 +1503,20 @@ function renderMain() {
 
   if (step.type === 'complete') {
     content.innerHTML = `<div class="completion-card fade-in">
-      <div class="completion-icon">🎉</div>
-      <div class="completion-title">フェーズ1：設計 完了！</div>
+      <div class="completion-icon">🌸</div>
+      <div class="completion-title">Basicコース 完了！</div>
       <div class="completion-body" style="margin-top:16px">
-        <p>おめでとうございます！</p>
-        <p style="margin-top:12px">あなたは今、</p>
-        <ul style="margin:16px 0;text-align:left;line-height:2.2;padding-left:24px">
-          <li>✦ 競合と被らない<strong>コンセプト</strong></li>
-          <li>✦ 受講生が夢中になる<strong>全12回カリキュラム</strong></li>
-          <li>✦ 自信を持って提示できる<strong>価格と特典</strong></li>
-          <li>✦ 魂のこもった<strong>キャッチコピー</strong></li>
+        <p>おめでとうございます！たった1ヶ月で、あなたは「自分だけのオンラインスクール」を持つオーナーになりました。</p>
+        <ul style="margin:20px 0;text-align:left;line-height:2.4;padding-left:24px">
+          <li>✦ 競合と被らない<strong>コンセプト</strong>が決まった（Week 1）</li>
+          <li>✦ ゴールまでの<strong>全12回カリキュラム</strong>を描いた（Week 2）</li>
+          <li>✦ 自信を持って提示できる<strong>価格と特典</strong>が揃った（Week 3）</li>
+          <li>✦ 世界に一つだけの<strong>会員サイト</strong>を立ち上げた（Week 4）</li>
         </ul>
-        <p>これらをすべて持っています。</p>
-        <p style="margin-top:16px;color:var(--rose);font-weight:500">次は Week 4：Utage会員サイトの土台作りへ進みましょう！</p>
+        <p>今のあなたは、知り合いに「私のスクール、見てみて！」と自信を持って言える状態です。</p>
+        <p style="margin-top:20px;padding:16px 20px;background:linear-gradient(135deg,#FFF8F5,#FFF3EC);border-radius:12px;border-left:3px solid var(--rose);font-size:13px;line-height:1.8">
+          「知らない人に広めたい」「寝ている間にお客様が集まる自動化を完成させたい」<br>そんな次のステージへ進む準備ができた方は、<strong style="color:var(--rose)">Standardコース（集客・自動化編）</strong>でお会いしましょう！
+        </p>
       </div>
     </div>`;
     renderSidebar();
@@ -879,6 +1537,149 @@ function renderMain() {
         ワークを始める →
       </button>
     </div>`;
+    renderSidebar();
+    return;
+  }
+
+  // Guide type
+  if (step.type === 'guide') {
+    const itemsHtml = step.guideItems.map(item => `
+      <div style="display:flex;gap:16px;margin-bottom:20px;align-items:flex-start">
+        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--blush));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0">${item.step}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600;color:var(--deep);margin-bottom:4px">${item.title}</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.8;white-space:pre-wrap">${item.body}</div>
+          ${item.link ? `<a href="${item.link.url}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:var(--rose);text-decoration:none;border:1px solid rgba(196,133,106,0.3);padding:4px 12px;border-radius:20px;transition:all 0.2s" onmouseover="this.style.background='#FFF3ED'" onmouseout="this.style.background='transparent'">📖 ${item.link.label} →</a>` : ''}
+        </div>
+      </div>`).join('');
+
+    const checksHtml = step.checkItems ? `
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:var(--rose);margin-bottom:12px;text-transform:uppercase">完了チェック</div>
+        ${step.checkItems.map((item, ci) => `
+          <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer">
+            <input type="checkbox" id="chk-${step.id}-${ci}" onchange="saveAnswer('chk-${step.id}-${ci}', this.checked)" ${state.answers['chk-'+step.id+'-'+ci] ? 'checked' : ''} style="width:16px;height:16px;accent-color:var(--rose)">
+            <span style="font-size:13px;color:var(--deep)">${item}</span>
+          </label>`).join('')}
+      </div>` : '';
+
+    const isFirst = state.currentStep === 0;
+    const prevBtn = isFirst ? '' : `<button class="btn-prev" onclick="prevStep()">← 戻る</button>`;
+
+    content.innerHTML = `
+      <div class="step-card fade-in">
+        <div class="step-header">
+          <div class="step-number">${state.currentStep}</div>
+          <div class="step-title-wrap">
+            <div class="step-week">Week ${step.week}</div>
+            <div class="step-title">${step.title}</div>
+          </div>
+        </div>
+        <div class="step-body">
+          ${itemsHtml}
+          ${checksHtml}
+        </div>
+        <div class="step-footer">
+          ${prevBtn}
+          <button class="btn-next" onclick="nextStep()">次へ進む →</button>
+        </div>
+      </div>`;
+    renderSidebar();
+    return;
+  }
+
+  // Q&A type
+  if (step.type === 'qa') {
+    const [openIdx, setOpen] = [state.answers['__qaOpen'] || null, (v) => { state.answers['__qaOpen'] = v; }];
+    let catHtml = step.categories.map((cat, ci) => {
+      const itemsHtml = cat.items.map((item, ii) => {
+        const key = `qa-${ci}-${ii}`;
+        const isOpen = state.answers[key];
+        return `<div style="border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden">
+          <div onclick="toggleQA('${key}')" style="padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:${isOpen?'#FFF8F5':'#FDFCFA'}">
+            <span style="font-size:13.5px;font-weight:500;color:var(--deep)">${item.q}</span>
+            <span style="color:var(--rose);font-size:18px;line-height:1">${isOpen?'−':'+'}</span>
+          </div>
+          ${isOpen ? `<div style="padding:0 18px 16px;border-top:1px solid var(--border);background:#FDFCFA">
+            <p style="font-size:13px;color:var(--muted);line-height:1.8;margin-top:12px">${item.a}</p>
+            <div style="margin-top:10px;padding:10px 14px;background:linear-gradient(135deg,#EFF5F1,#F0F5F2);border-radius:8px;font-size:12px;color:#5A7A63">
+              <strong>👉 次にやること：</strong>${item.next}
+            </div>
+          </div>` : ''}
+        </div>`;
+      }).join('');
+      return `<div style="margin-bottom:24px">
+        <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--rose);margin-bottom:12px">${cat.label}</div>
+        ${itemsHtml}
+      </div>`;
+    }).join('');
+
+    content.innerHTML = `
+      <div class="step-card fade-in">
+        <div class="step-header">
+          <div class="step-number" style="background:linear-gradient(135deg,var(--sage),#6A8F76)">？</div>
+          <div class="step-title-wrap">
+            <div class="step-week" style="color:var(--sage)">サポートコンテンツ</div>
+            <div class="step-title">${step.title}</div>
+            <div class="step-time">あなたが止まるのは"正常"です。今の不安に近い質問を選んでください。</div>
+          </div>
+        </div>
+        <div class="step-body">${catHtml}</div>
+        <div class="step-footer">
+          <button class="btn-prev" onclick="prevStep()">← 戻る</button>
+          <button class="btn-next" onclick="nextStep()">次へ進む →</button>
+        </div>
+      </div>`;
+    renderSidebar();
+    return;
+  }
+
+  // Graduation check type
+  if (step.type === 'graduation_check') {
+    const groupsHtml = step.checkGroups.map((grp, gi) => {
+      const itemsHtml = grp.items.map((item, ii) => {
+        const key = `grad-chk-${gi}-${ii}`;
+        const val = state.answers[key] || '⬜';
+        return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <select onchange="saveAnswer('${key}', this.value)" style="border:1.5px solid var(--border);border-radius:8px;padding:4px 8px;font-size:13px;color:var(--deep);background:#FDFCFA;cursor:pointer;outline:none">
+            <option ${val==='⬜'?'selected':''}>⬜</option>
+            <option ${val==='✔'?'selected':''}>✔</option>
+            <option ${val==='△'?'selected':''}>△</option>
+            <option ${val==='✕'?'selected':''}>✕</option>
+          </select>
+          <span style="font-size:13px;color:var(--deep)">${item}</span>
+        </div>`;
+      }).join('');
+      return `<div style="margin-bottom:24px">
+        <div style="font-size:12px;font-weight:600;color:var(--rose);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">${grp.label}</div>
+        ${itemsHtml}
+      </div>`;
+    }).join('');
+
+    content.innerHTML = `
+      <div class="step-card fade-in">
+        <div class="step-header">
+          <div class="step-number" style="background:linear-gradient(135deg,var(--gold),#D4A855)">✓</div>
+          <div class="step-title-wrap">
+            <div class="step-week" style="color:var(--gold)">卒業テスト</div>
+            <div class="step-title">${step.title}</div>
+            <div class="step-time">✔/△/✕ で自己判定してください。✕が多少あってもOKです。</div>
+          </div>
+        </div>
+        <div class="step-body">
+          ${groupsHtml}
+          <div style="padding:16px 20px;background:linear-gradient(135deg,#FFF8F5,#FFF3EC);border-radius:12px;border-left:3px solid var(--rose);font-size:13px;line-height:1.8;margin-top:8px">
+            <strong style="color:var(--rose)">合格基準はたった1つ</strong><br>
+            「自分で売っていい状態に到達している」こと。<br>
+            コンセプトが明確・12回が揃っている・Utageに入っている。<br>
+            これが揃っていれば合格です。
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-prev" onclick="prevStep()">← 戻る</button>
+          <button class="btn-next" onclick="nextStep()">次へ進む →</button>
+        </div>
+      </div>`;
     renderSidebar();
     return;
   }
@@ -940,7 +1741,8 @@ function renderMain() {
       </div>
       <div class="step-body">
         ${savedDataHtml}
-        ${step.purpose ? `<div class="purpose-box"><p>${step.purpose.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p></div>` : ''}
+        ${step.purpose ? `<div class="purpose-box"><p>${step.purpose.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</p></div>` : ''}
+        ${step.guideLink ? `<a href="${step.guideLink.url}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-bottom:20px;font-size:12px;color:var(--rose);text-decoration:none;border:1px solid rgba(196,133,106,0.3);padding:6px 14px;border-radius:20px">📖 ${step.guideLink.label} →</a>` : ''}
         ${fieldsHtml}
         ${aiSectionHtml}
       </div>
@@ -982,6 +1784,11 @@ function prevStep() {
 
 function saveAnswer(id, val) {
   state.answers[id] = val;
+}
+
+function toggleQA(key) {
+  state.answers[key] = !state.answers[key];
+  renderMain();
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
