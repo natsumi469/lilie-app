@@ -366,6 +366,32 @@
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(42,31,26,0.12); border-radius: 3px; }
+  /* ── パスワードモーダル ── */
+  .pw-overlay {
+    position: fixed; inset: 0; background: rgba(42,31,26,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; backdrop-filter: blur(4px);
+  }
+  .pw-modal {
+    background: var(--surface); border-radius: 20px;
+    padding: 40px 36px; width: 360px; max-width: 90vw;
+    box-shadow: 0 8px 40px rgba(42,31,26,0.2); text-align: center;
+  }
+  .pw-modal h2 { font-size: 20px; color: var(--deep); margin-bottom: 8px; }
+  .pw-modal p { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+  .pw-modal input {
+    width: 100%; padding: 12px 16px; border: 1px solid var(--border);
+    border-radius: 10px; font-size: 15px; margin-bottom: 8px;
+    box-sizing: border-box; text-align: center; letter-spacing: 0.05em;
+  }
+  .pw-modal input:focus { outline: none; border-color: var(--rose); }
+  .pw-modal .pw-error { font-size: 12px; color: #c0392b; margin-bottom: 12px; min-height: 18px; }
+  .pw-modal button {
+    width: 100%; padding: 13px; background: var(--rose); color: white;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .pw-modal button:hover { opacity: 0.85; }
 </style>
 </head>
 <body>
@@ -396,6 +422,56 @@
 </main>
 
 <script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AUTH
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const COURSE_PASSWORD = 'LilieBasic03202348';
+const WEEK1_STEP_COUNT = 4; // Week1はインデックス0〜3
+
+function isAuthenticated() {
+  return localStorage.getItem('lilie_auth') === '1';
+}
+
+function showPasswordModal(onSuccess) {
+  const overlay = document.createElement('div');
+  overlay.className = 'pw-overlay';
+  overlay.innerHTML = `
+    <div class="pw-modal">
+      <h2>本講座へようこそ</h2>
+      <p>Week 2以降は本講座受講生限定のコンテンツです。<br>受講時にお伝えしたアクセスコードを入力してください。</p>
+      <input type="password" id="pwInput" placeholder="アクセスコード" autocomplete="off">
+      <div class="pw-error" id="pwError"></div>
+      <button onclick="submitPassword()">進む</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('pwInput').focus();
+  document.getElementById('pwInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitPassword();
+  });
+  window._pwOnSuccess = onSuccess;
+}
+
+function submitPassword() {
+  const val = document.getElementById('pwInput').value;
+  if (val === COURSE_PASSWORD) {
+    localStorage.setItem('lilie_auth', '1');
+    document.querySelector('.pw-overlay').remove();
+    window._pwOnSuccess && window._pwOnSuccess();
+  } else {
+    document.getElementById('pwError').textContent = 'アクセスコードが正しくありません';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+
+function requireAuth(targetIndex, onSuccess) {
+  if (targetIndex < WEEK1_STEP_COUNT || isAuthenticated()) {
+    onSuccess();
+  } else {
+    showPasswordModal(onSuccess);
+  }
+}
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // STATE
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1784,20 +1860,25 @@ function renderMain() {
 // NAVIGATION
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function goToStep(i) {
-  state.currentStep = i;
-  renderMain();
-  document.querySelector('.main').scrollTop = 0;
-  window.scrollTo(0, 0);
+  requireAuth(i, () => {
+    state.currentStep = i;
+    renderMain();
+    document.querySelector('.main').scrollTop = 0;
+    window.scrollTo(0, 0);
+  });
 }
 
 function nextStep() {
-  state.completedSteps.add(steps[state.currentStep].id);
-  if (state.currentStep < steps.length - 1) {
-    state.currentStep++;
-    saveToStorage();
-    renderMain();
-    window.scrollTo(0, 0);
-  }
+  const next = state.currentStep + 1;
+  requireAuth(next, () => {
+    state.completedSteps.add(steps[state.currentStep].id);
+    if (state.currentStep < steps.length - 1) {
+      state.currentStep = next;
+      saveToStorage();
+      renderMain();
+      window.scrollTo(0, 0);
+    }
+  });
 }
 
 function prevStep() {
